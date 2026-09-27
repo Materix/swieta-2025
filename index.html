@@ -22,7 +22,11 @@
   }
   .tree { font-size: 48px; line-height: 1; }
   h1 { font-size: 26px; margin: 12px 0 4px; }
-  .year { color: var(--muted); margin: 0 0 24px; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; }
+  .year { display: block; margin: 0 auto 24px; color: var(--muted); font-size: 14px; }
+  .year select {
+    font: inherit; font-size: 15px; color: var(--ink); background: #f3ead6;
+    border: 1px solid var(--gold); border-radius: 999px; padding: 6px 12px; margin-left: 6px;
+  }
   button {
     font: inherit; font-size: 18px; color: #fff; background: var(--red); border: 0;
     border-radius: 999px; padding: 14px 28px; cursor: pointer;
@@ -47,7 +51,7 @@
 <main class="card" id="app">
   <div class="tree">🎄</div>
   <h1>Świąteczne losowanie</h1>
-  <p class="year" id="year"></p>
+  <label class="year">Rok losowania <select id="year"></select></label>
   <div id="content"></div>
 </main>
 <script>
@@ -55,11 +59,24 @@
   const DISPLAY = { Michal: "Michał" };
   const show = (p) => DISPLAY[p] || p;
 
+  // Lata, dla których istnieje katalog z wynikami — dopisz nowy rok po losowaniu.
+  const YEARS = ["2024", "2025", "2026"];
+  const thisYear = String(new Date().getFullYear());
+  const defaultYear = YEARS.includes(thisYear)
+    ? thisYear
+    : YEARS.filter((y) => y <= thisYear).pop() || YEARS[YEARS.length - 1];
+
   const params = new URLSearchParams(location.search);
-  const year = /^\d{4}$/.test(params.get("rok") || "") ? params.get("rok") : "2026";
+  const year = YEARS.includes(params.get("rok")) ? params.get("rok") : defaultYear;
   const person = PEOPLE.find((p) => p === params.get("osoba"));
   const content = document.getElementById("content");
-  document.getElementById("year").textContent = "Rok " + year;
+  const yearSelect = document.getElementById("year");
+  for (const y of [...YEARS].reverse()) yearSelect.add(new Option(y, y, false, y === year));
+  yearSelect.addEventListener("change", () => {
+    if (yearSelect.value === defaultYear) params.delete("rok");
+    else params.set("rok", yearSelect.value);
+    location.search = params.toString();
+  });
 
   if (!person) {
     content.innerHTML = '<p class="label">Wybierz siebie:</p><ul></ul>';
@@ -68,7 +85,7 @@
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.className = "person";
-      a.href = "?osoba=" + encodeURIComponent(p) + (year !== "2026" ? "&rok=" + year : "");
+      a.href = "?osoba=" + encodeURIComponent(p) + (year !== defaultYear ? "&rok=" + year : "");
       a.textContent = show(p);
       li.appendChild(a);
       list.appendChild(li);
@@ -77,9 +94,10 @@
     content.innerHTML =
       '<p class="label">Cześć <strong></strong>!</p>' +
       '<button type="button">Odkryj, kogo obdarowujesz 🎁</button>' +
-      '<div class="result"><p class="label">W tym roku robisz prezent dla:</p>' +
+      '<div class="result"><p class="label">Twój los na rok <span class="y"></span> — prezent dla:</p>' +
       '<p class="name"></p><div class="gift">🎁</div></div>';
     content.querySelector("strong").textContent = show(person);
+    content.querySelector(".y").textContent = year;
     const button = content.querySelector("button");
     const result = content.querySelector(".result");
     button.addEventListener("click", async () => {
