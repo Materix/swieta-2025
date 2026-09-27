@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Świąteczne losowanie</title>
+<style>
+  :root {
+    --bg: #0f2a1d; --card: #fffaf0; --ink: #1d1d1b; --muted: #6b6b63;
+    --red: #b3202a; --red-dark: #8c1820; --gold: #d9a441;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px;
+    background: radial-gradient(circle at 50% 0%, #1d4a33, var(--bg) 70%);
+    font-family: Georgia, "Times New Roman", serif; color: var(--ink);
+  }
+  .card {
+    width: 100%; max-width: 420px; background: var(--card); border-radius: 18px;
+    padding: 32px 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.4);
+    border-top: 6px solid var(--red);
+  }
+  .tree { font-size: 48px; line-height: 1; }
+  h1 { font-size: 26px; margin: 12px 0 4px; }
+  .year { color: var(--muted); margin: 0 0 24px; letter-spacing: .08em; text-transform: uppercase; font-size: 13px; }
+  button {
+    font: inherit; font-size: 18px; color: #fff; background: var(--red); border: 0;
+    border-radius: 999px; padding: 14px 28px; cursor: pointer;
+  }
+  button:hover { background: var(--red-dark); }
+  .result { display: none; }
+  .result.shown { display: block; animation: pop .5s ease-out; }
+  .label { color: var(--muted); margin: 0 0 8px; }
+  .name { font-size: 40px; font-weight: bold; color: var(--red); margin: 0 0 8px; }
+  .gift { font-size: 56px; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  a.person {
+    display: block; padding: 12px; border-radius: 12px; text-decoration: none;
+    color: var(--ink); background: #f3ead6; border: 1px solid var(--gold);
+  }
+  a.person:hover { background: #eadcbd; }
+  .error { color: var(--red); }
+  @keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+<main class="card" id="app">
+  <div class="tree">🎄</div>
+  <h1>Świąteczne losowanie</h1>
+  <p class="year" id="year"></p>
+  <div id="content"></div>
+</main>
+<script>
+  const PEOPLE = ["Agnieszka", "Gabrysia", "Krzysztof", "Michal", "Ola"];
+  const DISPLAY = { Michal: "Michał" };
+  const show = (p) => DISPLAY[p] || p;
+
+  const params = new URLSearchParams(location.search);
+  const year = /^\d{4}$/.test(params.get("rok") || "") ? params.get("rok") : "2026";
+  const person = PEOPLE.find((p) => p === params.get("osoba"));
+  const content = document.getElementById("content");
+  document.getElementById("year").textContent = "Rok " + year;
+
+  if (!person) {
+    content.innerHTML = '<p class="label">Wybierz siebie:</p><ul></ul>';
+    const list = content.querySelector("ul");
+    for (const p of PEOPLE) {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.className = "person";
+      a.href = "?osoba=" + encodeURIComponent(p) + (year !== "2026" ? "&rok=" + year : "");
+      a.textContent = show(p);
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+  } else {
+    content.innerHTML =
+      '<p class="label">Cześć <strong></strong>!</p>' +
+      '<button type="button">Odkryj, kogo obdarowujesz 🎁</button>' +
+      '<div class="result"><p class="label">W tym roku robisz prezent dla:</p>' +
+      '<p class="name"></p><div class="gift">🎁</div></div>';
+    content.querySelector("strong").textContent = show(person);
+    const button = content.querySelector("button");
+    const result = content.querySelector(".result");
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        const res = await fetch(year + "/" + person + ".txt", { cache: "no-store" });
+        if (!res.ok) throw new Error(res.status);
+        result.querySelector(".name").textContent = show((await res.text()).trim());
+        button.remove();
+        result.classList.add("shown");
+      } catch (e) {
+        button.disabled = false;
+        result.outerHTML = '<p class="error">Nie udało się wczytać wyniku (' + e.message + ').</p>';
+      }
+    });
+  }
+</script>
+</body>
+</html>
