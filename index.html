@@ -49,6 +49,56 @@
   a.person:hover { background: #eadcbd; }
   .error { color: var(--red); }
   @keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  /* Prezent do otwarcia */
+  .present {
+    position: relative; width: 140px; height: 150px; margin: 8px auto 20px; padding: 0;
+    background: none; border-radius: 0; cursor: pointer;
+  }
+  .present:hover { background: none; }
+  .present .box, .present .lid { position: absolute; left: 50%; background: var(--red); }
+  .present .box { bottom: 0; width: 120px; height: 100px; margin-left: -60px; border-radius: 0 0 8px 8px; }
+  .present .lid {
+    bottom: 96px; width: 136px; height: 30px; margin-left: -68px; border-radius: 6px;
+    background: var(--red-dark); transform-origin: 20% 100%;
+  }
+  .present .box::before, .present .lid::before {
+    content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 20px; margin-left: -10px;
+    background: var(--gold);
+  }
+  .present .bow {
+    position: absolute; left: 50%; bottom: 100%; width: 60px; height: 30px; margin-left: -30px;
+  }
+  .present .bow::before, .present .bow::after {
+    content: ""; position: absolute; bottom: -2px; width: 28px; height: 24px;
+    border: 7px solid var(--gold); border-radius: 50% 50% 0 50%;
+  }
+  .present .bow::before { left: 0; transform: rotate(-20deg); }
+  .present .bow::after { right: 0; transform: rotate(20deg) scaleX(-1); }
+  .hint { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
+  .present.shaking { animation: shake .9s ease-in-out; }
+  .present.open .lid { animation: lid-off .6s ease-in forwards; }
+  .present.open .box { animation: box-out .5s .35s ease-in forwards; }
+  @keyframes shake {
+    0%, 100% { transform: rotate(0); }
+    15% { transform: rotate(-8deg); } 30% { transform: rotate(8deg); }
+    45% { transform: rotate(-10deg) scale(1.05); } 60% { transform: rotate(10deg) scale(1.05); }
+    75% { transform: rotate(-5deg); } 90% { transform: rotate(4deg); }
+  }
+  @keyframes lid-off { to { transform: translate(60px, -90px) rotate(55deg); opacity: 0; } }
+  @keyframes box-out { to { transform: translateY(20px) scale(.6); opacity: 0; } }
+  .sparkles { position: relative; height: 0; }
+  .sparkles span {
+    position: absolute; left: 50%; top: -60px; font-size: 22px; opacity: 0;
+    animation: burst 1s ease-out forwards;
+  }
+  @keyframes burst {
+    0% { transform: translate(0, 0) scale(.4); opacity: 1; }
+    100% { transform: translate(var(--x), var(--y)) scale(1); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .present.shaking, .present.open .lid, .present.open .box, .sparkles span, .result.shown { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -122,33 +172,81 @@
   } else {
     content.innerHTML =
       '<p class="label">Cześć <strong></strong>!</p>' +
-      '<button type="button">Odkryj, kogo obdarowujesz 🎁</button>' +
+      '<p class="hint">Kliknij prezent, żeby go otworzyć</p>' +
+      '<button type="button" class="present" aria-label="Otwórz prezent">' +
+      '<span class="lid"><span class="bow"></span></span><span class="box"></span></button>' +
+      '<p class="error" hidden></p><div class="sparkles"></div>' +
       '<div class="result"><p class="label">Twój los na rok <span class="y"></span> — prezent dla:</p>' +
       '<p class="name"></p><div class="child" hidden><p class="label">oraz dla dziecka:</p>' +
       '<p class="name"></p></div><div class="gift">🎁</div></div>';
     content.querySelector("strong").textContent = show(person);
     content.querySelector(".y").textContent = year;
-    const button = content.querySelector("button");
+    const button = content.querySelector(".present");
+    const hint = content.querySelector(".hint");
+    const error = content.querySelector(".error");
     const result = content.querySelector(".result");
-    button.addEventListener("click", async () => {
+    // Po pierwszym otwarciu zapamiętujemy to w przeglądarce i kolejnym razem pokazujemy wynik od razu.
+    const storageKey = "otwarte:" + houseId + "/" + year + "/" + person;
+    const storage = {
+      get() { try { return localStorage.getItem(storageKey) === "1"; } catch (e) { return false; } },
+      set() { try { localStorage.setItem(storageKey, "1"); } catch (e) {} },
+    };
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    async function loadResult() {
+      const res = await fetch(houseId + "/" + year + "/" + person + ".txt", { cache: "no-store" });
+      if (!res.ok) throw new Error(res.status);
+      const [taker, child] = (await res.text()).trim().split(/\s*\n\s*/);
+      result.querySelector(".name").textContent = show(taker);
+      if (child) {
+        const box = result.querySelector(".child");
+        box.querySelector(".name").textContent = show(child);
+        box.hidden = false;
+      }
+    }
+
+    function sparkle() {
+      const host = content.querySelector(".sparkles");
+      for (let i = 0; i < 14; i++) {
+        const s = document.createElement("span");
+        const angle = (i / 14) * 2 * Math.PI;
+        s.textContent = i % 2 ? "✨" : "⭐";
+        s.style.setProperty("--x", Math.round(Math.cos(angle) * 130) - 11 + "px");
+        s.style.setProperty("--y", Math.round(Math.sin(angle) * 90) + "px");
+        host.appendChild(s);
+      }
+      setTimeout(() => host.remove(), 1100);
+    }
+
+    async function open(animate) {
       button.disabled = true;
+      error.hidden = true;
       try {
-        const res = await fetch(houseId + "/" + year + "/" + person + ".txt", { cache: "no-store" });
-        if (!res.ok) throw new Error(res.status);
-        const [taker, child] = (await res.text()).trim().split(/\s*\n\s*/);
-        result.querySelector(".name").textContent = show(taker);
-        if (child) {
-          const box = result.querySelector(".child");
-          box.querySelector(".name").textContent = show(child);
-          box.hidden = false;
-        }
-        button.remove();
-        result.classList.add("shown");
+        await loadResult();
       } catch (e) {
         button.disabled = false;
-        result.outerHTML = '<p class="error">Nie udało się wczytać wyniku (' + e.message + ').</p>';
+        error.textContent = "Nie udało się wczytać wyniku (" + e.message + ").";
+        error.hidden = false;
+        return;
       }
-    });
+      storage.set();
+      hint.style.visibility = "hidden";
+      if (animate && !calm) {
+        button.classList.add("shaking");
+        await wait(900);
+        button.classList.replace("shaking", "open");
+        sparkle();
+        await wait(800);
+      }
+      button.remove();
+      hint.remove();
+      if (!animate) result.style.animation = "none";
+      result.classList.add("shown");
+    }
+
+    if (storage.get()) open(false);
+    else button.addEventListener("click", () => open(true));
   }
 </script>
 </body>

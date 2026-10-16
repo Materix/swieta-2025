@@ -16,3 +16,6 @@ Po kolejnym losowaniu dopisz nowy rok do `years` danego domu w `HOUSES` w `index
 
 Losowanie Bęczarki: `python3 losuj_beczarka.py <rok>` — bez powtórki pary i dziecka z poprzedniego roku,
 bez wzajemności (A→B wyklucza B→A).
+
+Po kliknięciu prezent się otwiera (animacja). Strona zapamiętuje w przeglądarce (`localStorage`), że dana osoba
+w danym domu i roku już otworzyła prezent — przy kolejnym wejściu wynik pokazuje się od razu, bez animacji.
