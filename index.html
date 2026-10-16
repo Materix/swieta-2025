@@ -22,7 +22,8 @@
   }
   .tree { font-size: 48px; line-height: 1; }
   h1 { font-size: 26px; margin: 12px 0 4px; }
-  .year { display: block; margin: 0 auto 24px; color: var(--muted); font-size: 14px; }
+  .year { display: block; margin: 0 auto 10px; color: var(--muted); font-size: 14px; }
+  .year:last-of-type { margin-bottom: 24px; }
   .year select {
     font: inherit; font-size: 15px; color: var(--ink); background: #f3ead6;
     border: 1px solid var(--gold); border-radius: 999px; padding: 6px 12px; margin-left: 6px;
@@ -51,25 +52,48 @@
 <main class="card" id="app">
   <div class="tree">🎄</div>
   <h1>Świąteczne losowanie</h1>
+  <label class="year">Dom <select id="house"></select></label>
   <label class="year">Rok losowania <select id="year"></select></label>
   <div id="content"></div>
 </main>
 <script>
-  const PEOPLE = ["Agnieszka", "Gabrysia", "Krzysztof", "Michal", "Ola"];
-  const DISPLAY = { Michal: "Michał" };
+  // Domy: uczestnicy i lata, dla których istnieje katalog <dom>/<rok> — dopisz nowy rok po losowaniu.
+  const HOUSES = {
+    zary: {
+      name: "Żary",
+      people: ["Agnieszka", "Gabrysia", "Krzysztof", "Michal", "Ola"],
+      years: ["2024", "2025", "2026"],
+    },
+    beczarka: {
+      name: "Bęczarka",
+      people: ["Agula-Bartula", "Ola-Michal", "Kasia-Pawel", "Julianka-Piotrek", "Rodzice"],
+      years: ["2025", "2026"],
+    },
+  };
+  const DISPLAY = {
+    Michal: "Michał",
+    "Agula-Bartula": "Agula i Bartula", "Ola-Michal": "Ola i Michał", "Kasia-Pawel": "Kasia i Paweł",
+    "Julianka-Piotrek": "Julianka i Piotrek", Rodzice: "Kasia i Staś (rodzice)", Jozek: "Józek",
+  };
   const show = (p) => DISPLAY[p] || p;
 
-  // Lata, dla których istnieje katalog z wynikami — dopisz nowy rok po losowaniu.
-  const YEARS = ["2024", "2025", "2026"];
+  const params = new URLSearchParams(location.search);
+  const houseId = HOUSES[params.get("dom")] ? params.get("dom") : "zary";
+  const house = HOUSES[houseId];
+  const YEARS = house.years;
   const thisYear = String(new Date().getFullYear());
   const defaultYear = YEARS.includes(thisYear)
     ? thisYear
     : YEARS.filter((y) => y <= thisYear).pop() || YEARS[YEARS.length - 1];
 
-  const params = new URLSearchParams(location.search);
   const year = YEARS.includes(params.get("rok")) ? params.get("rok") : defaultYear;
-  const person = PEOPLE.find((p) => p === params.get("osoba"));
+  const person = house.people.find((p) => p === params.get("osoba"));
   const content = document.getElementById("content");
+  const houseSelect = document.getElementById("house");
+  for (const [id, h] of Object.entries(HOUSES)) houseSelect.add(new Option(h.name, id, false, id === houseId));
+  houseSelect.addEventListener("change", () => {
+    location.search = houseSelect.value === "zary" ? "" : "dom=" + houseSelect.value;
+  });
   const yearSelect = document.getElementById("year");
   for (const y of [...YEARS].reverse()) yearSelect.add(new Option(y, y, false, y === year));
   yearSelect.addEventListener("change", () => {
@@ -81,11 +105,12 @@
   if (!person) {
     content.innerHTML = '<p class="label">Wybierz siebie:</p><ul></ul>';
     const list = content.querySelector("ul");
-    for (const p of PEOPLE) {
+    for (const p of house.people) {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.className = "person";
-      a.href = "?osoba=" + encodeURIComponent(p) + (year !== defaultYear ? "&rok=" + year : "");
+      a.href = "?" + (houseId !== "zary" ? "dom=" + houseId + "&" : "") +
+        "osoba=" + encodeURIComponent(p) + (year !== defaultYear ? "&rok=" + year : "");
       a.textContent = show(p);
       li.appendChild(a);
       list.appendChild(li);
@@ -95,7 +120,8 @@
       '<p class="label">Cześć <strong></strong>!</p>' +
       '<button type="button">Odkryj, kogo obdarowujesz 🎁</button>' +
       '<div class="result"><p class="label">Twój los na rok <span class="y"></span> — prezent dla:</p>' +
-      '<p class="name"></p><div class="gift">🎁</div></div>';
+      '<p class="name"></p><div class="child" hidden><p class="label">oraz dla dziecka:</p>' +
+      '<p class="name"></p></div><div class="gift">🎁</div></div>';
     content.querySelector("strong").textContent = show(person);
     content.querySelector(".y").textContent = year;
     const button = content.querySelector("button");
@@ -103,9 +129,15 @@
     button.addEventListener("click", async () => {
       button.disabled = true;
       try {
-        const res = await fetch(year + "/" + person + ".txt", { cache: "no-store" });
+        const res = await fetch(houseId + "/" + year + "/" + person + ".txt", { cache: "no-store" });
         if (!res.ok) throw new Error(res.status);
-        result.querySelector(".name").textContent = show((await res.text()).trim());
+        const [taker, child] = (await res.text()).trim().split(/\s*\n\s*/);
+        result.querySelector(".name").textContent = show(taker);
+        if (child) {
+          const box = result.querySelector(".child");
+          box.querySelector(".name").textContent = show(child);
+          box.hidden = false;
+        }
         button.remove();
         result.classList.add("shown");
       } catch (e) {
