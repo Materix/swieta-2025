@@ -22,8 +22,11 @@
   }
   .tree { font-size: 48px; line-height: 1; }
   h1 { font-size: 26px; margin: 12px 0 4px; }
-  .year { display: block; margin: 0 auto 10px; color: var(--muted); font-size: 14px; }
-  .year:last-of-type { margin-bottom: 24px; }
+  .house {
+    display: inline-block; margin: 4px 0 14px; padding: 6px 18px; border-radius: 999px;
+    background: var(--red); color: #fff; font-size: 20px; font-weight: bold; letter-spacing: .5px;
+  }
+  .year { display: block; margin: 0 auto 24px; color: var(--muted); font-size: 14px; }
   .year select {
     font: inherit; font-size: 15px; color: var(--ink); background: #f3ead6;
     border: 1px solid var(--gold); border-radius: 999px; padding: 6px 12px; margin-left: 6px;
@@ -52,7 +55,7 @@
 <main class="card" id="app">
   <div class="tree">🎄</div>
   <h1>Świąteczne losowanie</h1>
-  <label class="year">Dom <select id="house"></select></label>
+  <div class="house" id="house"></div>
   <label class="year">Rok losowania <select id="year"></select></label>
   <div id="content"></div>
 </main>
@@ -89,11 +92,13 @@
   const year = YEARS.includes(params.get("rok")) ? params.get("rok") : defaultYear;
   const person = house.people.find((p) => p === params.get("osoba"));
   const content = document.getElementById("content");
-  const houseSelect = document.getElementById("house");
-  for (const [id, h] of Object.entries(HOUSES)) houseSelect.add(new Option(h.name, id, false, id === houseId));
-  houseSelect.addEventListener("change", () => {
-    location.search = houseSelect.value === "zary" ? "" : "dom=" + houseSelect.value;
-  });
+  document.getElementById("house").textContent = "🏠 " + house.name;
+  document.title = "Świąteczne losowanie — " + house.name;
+  // Dom zawsze w adresie (stare linki bez ?dom= trafiają do Żar).
+  if (params.get("dom") !== houseId) {
+    params.set("dom", houseId);
+    history.replaceState(null, "", "?" + params.toString());
+  }
   const yearSelect = document.getElementById("year");
   for (const y of [...YEARS].reverse()) yearSelect.add(new Option(y, y, false, y === year));
   yearSelect.addEventListener("change", () => {
@@ -109,8 +114,7 @@
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.className = "person";
-      a.href = "?" + (houseId !== "zary" ? "dom=" + houseId + "&" : "") +
-        "osoba=" + encodeURIComponent(p) + (year !== defaultYear ? "&rok=" + year : "");
+      a.href = "?dom=" + houseId + "&osoba=" + encodeURIComponent(p) + (year !== defaultYear ? "&rok=" + year : "");
       a.textContent = show(p);
       li.appendChild(a);
       list.appendChild(li);
