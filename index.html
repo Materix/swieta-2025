@@ -105,7 +105,16 @@
 
   /* Listy do Aniołka (karty .lc w dziewięciu wersjach .v1–.v9) */
   #lists { width: 100%; max-width: 760px; display: grid; gap: 36px; }
-  #lists:empty { display: none; }
+  #lists[hidden], .lcslot:empty { display: none; }
+  .letter {
+    font-size: 28px; line-height: 1; padding: 4px 8px; margin-left: 2px; vertical-align: middle;
+    background: #fff; border: 2px solid var(--gold); border-radius: 12px; cursor: pointer;
+    box-shadow: 0 2px 0 rgba(0,0,0,.12); transition: transform .15s ease, background-color .15s ease;
+  }
+  .letter:hover { background: #fdf1d6; transform: scale(1.12) rotate(-6deg); }
+  .letter:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .letter[aria-expanded="true"] { background: #f3ead6; border-color: var(--red); }
+  @media (prefers-reduced-motion: reduce) { .letter { transition: none; } .letter:hover { transform: none; } }
   .lc { text-align: left; animation: rise .6s ease-out; }
   .lc ul { display: block; }
   @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
@@ -258,7 +267,7 @@
   <label class="year">Rok losowania <select id="year"></select></label>
   <div id="content"></div>
 </main>
-<section id="lists" aria-label="Listy do Aniołka"></section>
+<section id="lists" aria-label="Listy do Aniołka" hidden></section>
 <script>
   // Domy: uczestnicy i lata, dla których istnieje katalog <dom>/<rok> — dopisz nowy rok po losowaniu.
   const HOUSES = {
@@ -428,16 +437,39 @@ async function fetchLetter(name) {
     return text ? parseLetter(text) : null;
   } catch (e) { return null; }
 }
-// Pokazuje listy wylosowanej pary i dziecka (tylko te, które już istnieją).
-async function showLists(taker, child) {
+// Obok imienia wylosowanej pary i dziecka pojawia się ikonka listu (tylko gdy lista istnieje);
+// kliknięcie otwiera list pod kartą, ponowne kliknięcie go zamyka.
+async function addLetterIcons(slots) {
   if (!house.children) return;
-  const jobs = [["pair", house.people.indexOf(taker), taker]];
-  if (child) jobs.push(["child", house.children.indexOf(child), child]);
-  const cards = await Promise.all(jobs.map(async ([kind, idx, name]) => {
-    const blocks = await fetchLetter(name);
-    return blocks ? listCard(styleOf(kind, idx, year), name, blocks, year) : "";
+  const host = document.getElementById("lists");
+  const calmMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const entries = slots.map(([kind, who, nameEl]) => {
+    const idx = (kind === "pair" ? house.people : house.children).indexOf(who);
+    const slot = document.createElement("div");
+    slot.className = "lcslot";
+    host.appendChild(slot);
+    return { kind, who, idx, nameEl, slot };
+  });
+  await Promise.all(entries.map(async (e) => {
+    const blocks = await fetchLetter(e.who);
+    if (!blocks) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "letter";
+    btn.textContent = "✉️";
+    btn.title = "List do Aniołka: " + show(e.who);
+    btn.setAttribute("aria-label", "Otwórz list do Aniołka: " + show(e.who));
+    btn.setAttribute("aria-expanded", "false");
+    btn.addEventListener("click", () => {
+      const open = e.slot.childElementCount === 0;
+      e.slot.innerHTML = open ? listCard(styleOf(e.kind, e.idx, year), e.who, blocks, year) : "";
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", (open ? "Zamknij" : "Otwórz") + " list do Aniołka: " + show(e.who));
+      host.hidden = !host.querySelector(".lc");
+      if (open) e.slot.scrollIntoView({ behavior: calmMotion ? "auto" : "smooth", block: "start" });
+    });
+    e.nameEl.append(" ", btn);
   }));
-  document.getElementById("lists").innerHTML = cards.join("");
 }
 
   if (!person) {
@@ -528,7 +560,8 @@ async function showLists(taker, child) {
       hint.remove();
       if (!animate) result.style.animation = "none";
       result.classList.add("shown");
-      showLists(drawn.taker, drawn.child);
+      addLetterIcons([["pair", drawn.taker, result.querySelector(".name")],
+        ...(drawn.child ? [["child", drawn.child, result.querySelector(".child .name")]] : [])]);
     }
 
     if (storage.get()) open(false);

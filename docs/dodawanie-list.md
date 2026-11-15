@@ -1,7 +1,9 @@
 # Dodawanie list do Aniołka (Bęczarka)
 
-Lista to list napisany do Aniołka przez parę albo dziecko (np. „Ola i Michał”, „Wojtek”). Po otwarciu prezentu strona
-pokazuje listy **wylosowanej pary** i **wylosowanego dziecka**. Listy są co roku nowe i wyświetlane w całości.
+Lista to list napisany do Aniołka przez parę albo dziecko (np. „Ola i Michał”, „Wojtek”). Po otwarciu prezentu obok imienia
+**wylosowanej pary** i **wylosowanego dziecka** pojawia się ikonka listu ✉️ (tylko gdy plik istnieje). Kliknięcie otwiera
+list pod kartą, ponowne kliknięcie go zamyka. Listy są co roku nowe i wyświetlane w całości.
+Podgląd własnego listu i listów dzieci to osobne zadanie: issue #3.
 
 ## Gdzie leżą pliki
 
