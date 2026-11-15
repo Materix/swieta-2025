@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Świąteczne losowanie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@500;700&family=Comfortaa:wght@400;700&family=Courier+Prime:wght@400;700&family=Dancing+Script:wght@500;700&family=Great+Vibes&family=Kalam:wght@400;700&family=Lato:wght@400;700&family=Lobster&family=Merienda:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;1,500&display=swap">
 <style>
   :root {
     --bg: #0f2a1d; --card: #fffaf0; --ink: #1d1d1b; --muted: #6b6b63;
@@ -11,7 +14,7 @@
   }
   * { box-sizing: border-box; }
   body {
-    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px;
+    margin: 0; min-height: 100vh; display: grid; place-items: center; align-content: center; gap: 28px; padding: 16px;
     background: radial-gradient(circle at 50% 0%, #1d4a33, var(--bg) 70%);
     font-family: Georgia, "Times New Roman", serif; color: var(--ink);
   }
@@ -99,6 +102,152 @@
   @media (prefers-reduced-motion: reduce) {
     .present.shaking, .present.open .lid, .present.open .box, .sparkles span, .result.shown { animation: none; }
   }
+
+  /* Listy do Aniołka (karty .lc w dziewięciu wersjach .v1–.v9) */
+  #lists { width: 100%; max-width: 760px; display: grid; gap: 36px; }
+  #lists:empty { display: none; }
+  .lc { text-align: left; animation: rise .6s ease-out; }
+  .lc ul { display: block; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+  @media (prefers-reduced-motion: reduce) { .lc { animation: none; } }
+/* ---------- wspólny szkielet karty ---------- */
+.lc { position: relative; padding: 34px 38px 26px; min-width: 0; overflow-wrap: anywhere; }
+.lc h3 { margin: 0; }
+.lc .for { margin: 0; }
+.lc ul { list-style: none; margin: 0; padding: 0; }
+.lc a { text-underline-offset: 3px; }
+.stk { position: absolute; font-size: 2.1rem; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); pointer-events: none; }
+.v1 .stk, .v2 .stk { --ov: 4px; }
+
+/* ---------- 1 Pergamin ---------- */
+.v1 { color: #3b2a1a; border-radius: 4px; font-family: "Caveat", cursive; font-size: 1.45rem; line-height: 1.35; padding-top: 36px;
+  background: radial-gradient(ellipse at 0 0, rgba(120,70,20,.35), transparent 38%), radial-gradient(ellipse at 100% 100%, rgba(120,70,20,.35), transparent 40%), radial-gradient(ellipse at 100% 0, rgba(120,70,20,.18), transparent 30%), #ecd9a8;
+  box-shadow: 0 14px 34px rgba(0,0,0,.5);
+  clip-path: polygon(0 1%, 4% 0, 9% 1.2%, 15% 0, 22% 1%, 30% 0, 38% 1.3%, 47% 0, 55% 1%, 63% 0, 71% 1.2%, 80% 0, 88% 1%, 94% 0, 100% 1.2%, 99.3% 30%, 100% 62%, 99.2% 100%, 92% 99%, 84% 100%, 75% 99%, 66% 100%, 57% 98.8%, 47% 100%, 38% 99%, 28% 100%, 19% 99%, 9% 100%, 0 99%, .7% 70%, 0 40%); }
+.v1 .for { font-size: 1rem; letter-spacing: .06em; text-transform: uppercase; color: #8a5a2b; font-family: var(--f-ui); font-weight: 700; }
+.v1 h3 { font-size: 2.5rem; line-height: 1.05; font-weight: 700; color: #6e1f1f; padding-right: 60px; }
+.v1 .lead2 { margin: 6px 0 10px; }
+.v1 li { padding-left: 1.7rem; position: relative; margin-bottom: 4px; }
+.v1 li::before { content: "✦"; position: absolute; left: 0; top: .2rem; color: #b3202a; font-size: 1.05rem; }
+.v1 a { color: #1f4f7a; text-decoration-thickness: 2px; }
+
+/* ---------- 2 Zimowa noc ---------- */
+.v2 { color: #eef2ff; border-radius: 22px; overflow: hidden; font-family: "Lato", sans-serif; line-height: 1.55; padding-top: 24px;
+  background: radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 70% 12%, #fff, transparent 60%), radial-gradient(2px 2px at 86% 30%, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 30% 44%, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 92% 62%, #fff, transparent 60%), radial-gradient(2px 2px at 8% 72%, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 58% 86%, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 44% 6%, #fff, transparent 60%), linear-gradient(170deg, #1b2a5c 0%, #0f1b3d 55%, #0a1230 100%);
+  box-shadow: 0 14px 34px rgba(0,0,0,.55), inset 0 0 0 1px rgba(226,180,87,.45); }
+.v2 .angel { display: block; width: 66px; margin: 0 auto 4px; filter: drop-shadow(0 0 10px rgba(226,180,87,.7)); }
+.v2 .for { text-align: center; font-size: .75rem; letter-spacing: .22em; text-transform: uppercase; color: #e2b457; }
+.v2 h3 { font-family: "Playfair Display", serif; font-style: italic; font-weight: 500; text-align: center; font-size: 2.1rem; margin-bottom: 12px; color: #fff; }
+.v2 li { padding: 9px 0 9px 2rem; position: relative; border-bottom: 1px dashed rgba(226,180,87,.35); }
+.v2 li:last-child { border-bottom: 0; }
+.v2 li::before { content: "★"; position: absolute; left: .25rem; color: #e2b457; }
+.v2 a { color: #ffd98a; }
+
+/* ---------- 3 Kolorowy papier ---------- */
+.v3 { color: #2b2b2b; border-radius: 26px; font-family: "Merienda", cursive; font-size: .98rem; line-height: 1.5; padding-top: 40px;
+  background: radial-gradient(circle, rgba(179,32,42,.14) 2.5px, transparent 3px) 0 0/22px 22px, #fff6e3; box-shadow: 0 14px 34px rgba(0,0,0,.45); }
+.v3::before { content: ""; position: absolute; left: 50%; top: -12px; width: 120px; height: 28px; transform: translateX(-50%) rotate(-3deg); background: repeating-linear-gradient(45deg, #d9a441 0 8px, #f0cf85 8px 16px); opacity: .92; border-radius: 3px; }
+.v3 h3 { font-family: "Lobster", cursive; font-weight: 400; font-size: 2.4rem; color: #b3202a; line-height: 1.1; padding-right: 56px; }
+.v3 .for { margin-bottom: 12px; color: #2f6b4a; font-weight: 700; }
+.v3 li { position: relative; padding: 3px 0 3px 1.6rem; }
+.v3 li::before { content: "✿"; position: absolute; left: 0; color: var(--ac, #b3202a); }
+.v3 a { color: #1c5fa8; font-weight: 700; }
+
+/* ---------- 4 Zeszyt w kratkę ---------- */
+.v4 { color: #1c2f6b; border-radius: 6px; font-family: "Kalam", cursive; font-size: 1.15rem; line-height: 28px; padding: 28px 22px 70px 56px;
+  background: linear-gradient(90deg, transparent 43px, #e0525a 43px, #e0525a 45px, transparent 45px), repeating-linear-gradient(#fdfdf8 0 27px, #bcd3ee 27px 28px); background-color: #fdfdf8; box-shadow: 0 14px 34px rgba(0,0,0,.45); }
+.v4::before { content: ""; position: absolute; left: 10px; top: 24px; bottom: 24px; width: 14px; background: radial-gradient(circle at 7px 7px, #14251c 5px, #9aa0a6 6px, transparent 7px) 0 0/14px 36px repeat-y; }
+.v4 .for { font-size: .85rem; color: #6a7aa8; text-transform: uppercase; letter-spacing: .08em; }
+.v4 h3 { font-size: 2rem; line-height: 56px; font-weight: 700; color: #1c2f6b; }
+.v4 li { position: relative; padding-left: 1.4rem; }
+.v4 li::before { content: "–"; position: absolute; left: 0; color: #e0525a; font-weight: 700; }
+.v4 a { color: #0f6e4b; }
+
+/* ---------- 5 Kraft ---------- */
+.v5 { color: #3a2a1e; border-radius: 6px; font-family: "Courier Prime", monospace; font-size: .98rem; line-height: 1.55; padding-top: 52px;
+  background: repeating-linear-gradient(0deg, rgba(90,55,25,.05) 0 2px, transparent 2px 5px), radial-gradient(ellipse at 20% 10%, rgba(255,235,200,.35), transparent 55%), #b98a5c; box-shadow: 0 14px 34px rgba(0,0,0,.5); }
+.v5::before { content: ""; position: absolute; left: 22px; right: 22px; top: 22px; border-top: 3px dashed #f5ecd9; opacity: .9; }
+.v5 .tagb { display: inline-block; background: #fbf6ea; padding: 10px 16px 10px 22px; clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); margin: 0 0 10px; box-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.v5 .for { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: #8a5a2b; }
+.v5 h3 { font-size: 1.55rem; line-height: 1.1; font-weight: 700; color: #6e1f1f; }
+.v5 ul { background: rgba(251,246,234,.92); border-radius: 4px; padding: 10px 14px; }
+.v5 li { padding: 6px 0 6px 1.3rem; position: relative; border-bottom: 1px solid rgba(90,55,25,.2); }
+.v5 li:last-child { border-bottom: 0; }
+.v5 li::before { content: "▸"; position: absolute; left: 0; color: #b3202a; }
+.v5 a { color: #1f4f7a; }
+
+/* ---------- 6 Czerwony aksamit ---------- */
+.v6 { color: #f7e9c8; border-radius: 10px; font-family: "Playfair Display", serif; font-size: 1.02rem; line-height: 1.55; padding-top: 34px; text-align: center;
+  background: radial-gradient(ellipse at 50% 0, #a3202b, transparent 70%), repeating-linear-gradient(45deg, rgba(0,0,0,.08) 0 2px, transparent 2px 6px), #7a1019; box-shadow: 0 14px 34px rgba(0,0,0,.55); }
+.v6::before { content: ""; position: absolute; inset: 10px; border: 2px solid #d9a441; border-radius: 6px; box-shadow: inset 0 0 0 4px #7a1019, inset 0 0 0 5px rgba(217,164,65,.7); pointer-events: none; }
+.v6 .for { font-size: .7rem; letter-spacing: .26em; text-transform: uppercase; color: #e8c06b; font-family: var(--f-ui); }
+.v6 h3 { font-family: "Great Vibes", cursive; font-weight: 400; font-size: 3.2rem; line-height: 1.1; color: #ffd98a; margin: 2px 0 10px; }
+.v6 ul { display: grid; gap: 7px; }
+.v6 li::before, .v6 li::after { content: "❖"; color: #d9a441; font-size: .7rem; margin: 0 .6em; vertical-align: .1em; }
+.v6 a { color: #ffd98a; }
+
+/* ---------- 7 Lód ---------- */
+.v7 { color: #12385a; border-radius: 28px; font-family: "Comfortaa", sans-serif; font-size: .96rem; line-height: 1.55; padding-top: 32px;
+  background: radial-gradient(circle at 85% 10%, rgba(255,255,255,.9), transparent 35%), linear-gradient(160deg, #dff1ff, #a9d3f2 60%, #84bde6); box-shadow: 0 14px 34px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,255,255,.7); }
+.v7::before { content: "❄"; position: absolute; left: 14px; top: 6px; font-size: 3.6rem; color: rgba(255,255,255,.75); }
+.v7 .for { text-align: right; padding-right: 56px; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: #3b78a6; font-weight: 700; }
+.v7 h3 { font-size: 2.1rem; font-weight: 700; line-height: 1.15; margin: 8px 0 12px; padding-left: 52px; color: #0e2f4f; }
+.v7 ul { background: rgba(255,255,255,.6); border-radius: 18px; padding: 10px 16px; backdrop-filter: blur(2px); }
+.v7 li { padding: 7px 0 7px 1.5rem; position: relative; border-bottom: 1px solid rgba(18,56,90,.14); }
+.v7 li:last-child { border-bottom: 0; }
+.v7 li::before { content: "❅"; position: absolute; left: 0; color: #3b78a6; }
+.v7 a { color: #b3202a; font-weight: 700; }
+
+/* ---------- 8 Tablica w lesie ---------- */
+.v8 { color: #f0ead8; border-radius: 14px; font-family: "Amatic SC", cursive; font-weight: 700; font-size: 1.7rem; line-height: 1.2; letter-spacing: .02em; padding-top: 30px;
+  background: linear-gradient(0deg, rgba(8,28,18,.9) 0 var(--band, 26px), transparent var(--band, 26px)), repeating-conic-gradient(from 0deg at 50% 100%, transparent 0 8deg, rgba(255,255,255,.025) 8deg 16deg), #1f4a34;
+  box-shadow: 0 14px 34px rgba(0,0,0,.55), inset 0 0 0 6px #6b4a2b, inset 0 0 0 7px rgba(0,0,0,.35); padding-inline: 32px; }
+.v8 .for { font-size: 1.25rem; color: #f2c14e; letter-spacing: .1em; }
+.v8 h3 { font-size: 3.2rem; line-height: 1; margin: 0 0 8px; color: #fff; text-shadow: 0 0 6px rgba(255,255,255,.25); padding-right: 52px; }
+.v8 li { padding-left: 1.6rem; position: relative; }
+.v8 li::before { content: "🌲"; position: absolute; left: 0; font-size: 1.1rem; top: .1rem; }
+.v8 a { color: #f2c14e; }
+
+/* ---------- 9 Kartka papieru ---------- */
+.v9 { color: #2b2b2b; border-radius: 2px; padding-top: 38px; line-height: 28px;
+  background: var(--pat, none), var(--paper, #fffefa); box-shadow: 0 1px 1px rgba(0,0,0,.2), 0 14px 28px rgba(0,0,0,.4); transform: rotate(-.6deg); }
+.v9::before { content: "📌"; position: absolute; left: 50%; top: -10px; font-size: 1.6rem; transform: translateX(-50%) rotate(8deg); filter: drop-shadow(0 2px 1px rgba(0,0,0,.3)); }
+.v9 .for { font-family: var(--f-ui); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: #77777a; line-height: 1.2; }
+.v9 h3 { line-height: 1.15; margin: 4px 0 8px; padding-right: 56px; }
+.v9 li { position: relative; padding-left: 1.3rem; }
+.v9 li::before { content: "•"; position: absolute; left: .2rem; color: var(--ac, #1c2f6b); font-weight: 700; }
+.v9 a { color: #1f4f7a; }
+
+/* ---------- miksowanie: czcionka, kolor akcentu (zmienne ustawia skrypt) ---------- */
+.v1 { font-family: var(--ff, "Caveat", cursive); font-size: calc(1.45rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v1 h3 { font-family: var(--hf, "Caveat", cursive); font-size: calc(2.5rem * var(--hsc, 1)); color: var(--ac, #6e1f1f); font-weight: var(--hw, 700); }
+.v1 li::before { color: var(--ac, #b3202a); }
+.v2 { font-family: var(--ff, "Lato", sans-serif); font-size: calc(1rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v2 h3 { font-family: var(--hf, "Playfair Display", serif); font-size: calc(2.1rem * var(--hsc, 1)); color: var(--ac, #fff); font-weight: var(--hw, 500); font-style: var(--hs, italic); }
+.v2 li::before { color: var(--ac, #e2b457); }
+.v3 { font-family: var(--ff, "Merienda", cursive); font-size: calc(.98rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v3 h3 { font-family: var(--hf, "Lobster", cursive); font-size: calc(2.4rem * var(--hsc, 1)); color: var(--ac, #b3202a); font-weight: var(--hw, 400); }
+.v4 { font-family: var(--ff, "Kalam", cursive); font-size: calc(1.15rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v4 h3 { font-family: var(--hf, "Kalam", cursive); font-size: calc(2rem * var(--hsc, 1)); color: var(--ac, #1c2f6b); font-weight: var(--hw, 700); }
+.v5 { font-family: var(--ff, "Courier Prime", monospace); font-size: calc(.98rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v5 h3 { font-family: var(--hf, "Courier Prime", monospace); font-size: calc(1.55rem * var(--hsc, 1)); color: var(--ac, #6e1f1f); font-weight: var(--hw, 700); }
+.v6 { font-family: var(--ff, "Playfair Display", serif); font-size: calc(1.02rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v6 h3 { font-family: var(--hf, "Great Vibes", cursive); font-size: calc(3.2rem * var(--hsc, 1)); color: var(--ac, #ffd98a); font-weight: var(--hw, 400); }
+.v7 { font-family: var(--ff, "Comfortaa", sans-serif); font-size: calc(.96rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v7 h3 { font-family: var(--hf, "Comfortaa", sans-serif); font-size: calc(2.1rem * var(--hsc, 1)); color: var(--ac, #0e2f4f); font-weight: var(--hw, 700); }
+.v8 { font-family: var(--ff, "Amatic SC", cursive); font-size: calc(1.7rem * var(--sc, 1)); font-weight: var(--bw, 700); }
+.v8 h3 { font-family: var(--hf, "Amatic SC", cursive); font-size: calc(3.2rem * var(--hsc, 1)); color: var(--ac, #fff); font-weight: var(--hw, 700); }
+.v9 { font-family: var(--ff, "Kalam", cursive); font-size: calc(1.1rem * var(--sc, 1)); font-weight: var(--bw, 400); }
+.v9 h3 { font-family: var(--hf, "Caveat", cursive); font-size: calc(2.3rem * var(--hsc, 1)); color: var(--ac, #1c2f6b); font-weight: var(--hw, 700); }
+.lc.pad-b { padding-bottom: 54px; }
+.lc.no-stk { padding-bottom: 26px; }
+.lc h3 + ul, .lc .lead2 + ul { margin-top: 10px; }
+.lc p.t { margin: 0 0 1em; }
+.lc ul + p.t { margin-top: 1em; }
+.lc ul { margin-bottom: 0; }
+.v8.pad-b { --band: 54px; }
+.v4 p.t, .v9 p.t { margin-bottom: 28px; }
+.v4 ul + p.t, .v9 ul + p.t { margin-top: 28px; }
 </style>
 </head>
 <body>
@@ -109,6 +258,7 @@
   <label class="year">Rok losowania <select id="year"></select></label>
   <div id="content"></div>
 </main>
+<section id="lists" aria-label="Listy do Aniołka"></section>
 <script>
   // Domy: uczestnicy i lata, dla których istnieje katalog <dom>/<rok> — dopisz nowy rok po losowaniu.
   const HOUSES = {
@@ -121,6 +271,7 @@
       name: "Bęczarka",
       people: ["Agula-Bartula", "Ola-Michal", "Kasia-Pawel", "Julianka-Piotrek", "Rodzice"],
       years: ["2025", "2026"],
+      children: ["Jozek", "Wandzia", "Ritka", "Wojtek"],   // dzieci (listy: <dom>/listy/<rok>/<Imię>.txt)
     },
   };
   const DISPLAY = {
@@ -156,6 +307,138 @@
     else params.set("rok", yearSelect.value);
     location.search = params.toString();
   });
+
+  /* ---------- Listy do Aniołka ---------- */
+const STYLES = [
+  { id: 1, name: "Pergamin" }, { id: 2, name: "Zimowa noc" }, { id: 3, name: "Kolorowy papier" }, { id: 4, name: "Zeszyt w kratkę" },
+  { id: 5, name: "Kraft" }, { id: 6, name: "Czerwony aksamit" }, { id: 7, name: "Lód" }, { id: 8, name: "Tablica w lesie" }, { id: 9, name: "Kartka papieru" },
+];
+/* ----- miksowanie: pule czcionek (sc = skala optyczna), akcentów i papieru ----- */
+const F = {
+  Caveat: ['"Caveat",cursive', 1.25, 400, 700], Kalam: ['"Kalam",cursive', 1, 400, 700], Merienda: ['"Merienda",cursive', .88, 400, 700],
+  Courier: ['"Courier Prime",monospace', .9, 400, 700], Comfortaa: ['"Comfortaa",sans-serif', .88, 400, 700], Lato: ['"Lato",sans-serif', 1, 400, 700],
+  Playfair: ['"Playfair Display",serif', .95, 400, 600], Dancing: ['"Dancing Script",cursive', 1.15, 500, 700], Amatic: ['"Amatic SC",cursive', 1.45, 700, 700],
+  Lobster: ['"Lobster",cursive', 1.1, 400, 400], Vibes: ['"Great Vibes",cursive', 1.5, 400, 400],
+};   // [css, skala, waga tekstu, waga nagłówka]
+const BODY_POOL = ["Caveat", "Kalam", "Merienda", "Courier", "Comfortaa", "Lato", "Playfair", "Dancing", "Amatic"];
+const HEAD_POOL = ["Caveat", "Kalam", "Merienda", "Comfortaa", "Playfair", "Dancing", "Amatic", "Lobster", "Vibes"];
+const DEFAULT_FONTS = [["Caveat", "Caveat"], ["Lato", "Playfair"], ["Merienda", "Lobster"], ["Kalam", "Kalam"], ["Courier", "Courier"], ["Playfair", "Vibes"], ["Comfortaa", "Comfortaa"], ["Amatic", "Amatic"], ["Kalam", "Caveat"]];
+const ACC_LIGHT = ["#6e1f1f", "#b3202a", "#1c2f6b", "#1f5a3d", "#5a2d82", "#8a4b12"];
+const ACC_DARK = ["#ffd98a", "#ffb3c1", "#9fe0c0", "#9ec9ff", "#ffffff", "#f4a261"];
+const DARK_STYLES = [1, 5, 7];   // indeksy: Zimowa noc, Czerwony aksamit, Tablica w lesie
+const PAPER = ["#fffefa", "#fbf3dc", "#e9f6ee", "#fde8ee", "#e6f1fb", "#fff8c9"];
+const PATTERN = [
+  "none",
+  "repeating-linear-gradient(transparent 0 27px, rgba(70,110,170,.3) 27px 28px)",
+  "linear-gradient(rgba(70,110,170,.22) 1px, transparent 1px) 0 0/20px 20px, linear-gradient(90deg, rgba(70,110,170,.22) 1px, transparent 1px) 0 0/20px 20px",
+  "radial-gradient(rgba(60,60,60,.22) 1px, transparent 1.6px) 0 0/18px 18px",
+];
+function hash(str) { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function mixVars(styleIdx, key) {
+  const h = hash(key);
+  const bf = F[BODY_POOL[h % BODY_POOL.length]], hf = F[HEAD_POOL[(h >>> 4) % HEAD_POOL.length]];
+  const [dbn, dhn] = DEFAULT_FONTS[styleIdx], db = F[dbn], dh = F[dhn];
+  const accs = DARK_STYLES.includes(styleIdx) ? ACC_DARK : ACC_LIGHT;
+  let v = `--ff:${bf[0]};--sc:${(bf[1] / db[1]).toFixed(3)};--bw:${bf[2]};--hf:${hf[0]};--hsc:${(hf[1] / dh[1]).toFixed(3)};--hw:${hf[3]};--hs:normal;--ac:${accs[(h >>> 8) % accs.length]};`;
+  if (styleIdx === 8) v += `--paper:${PAPER[(h >>> 12) % PAPER.length]};--pat:${PATTERN[(h >>> 16) % PATTERN.length]};`;
+  return v;
+}
+
+function parseLetter(t) {
+  const blocks = []; let para = [], ul = null;
+  const flushP = () => { if (para.length) { blocks.push({ p: para.join("\n") }); para = []; } };
+  for (const line of t.split("\n")) {
+    if (/^- /.test(line)) { flushP(); if (!ul) { ul = []; blocks.push({ ul }); } ul.push(line.slice(2)); }
+    else if (line.trim() === "") { flushP(); ul = null; }
+    else { ul = null; para.push(line); }
+  }
+  flushP(); return blocks;
+}
+
+/* ----- naklejki z treści (maks. 3) ----- */
+const RULES = [
+  [/klock|lego/i, "🧱"], [/książk|bajk|czyta|album|komiks/i, "📚"], [/kredk|farb|mazak|rysow/i, "🎨"], [/piłk|football|sport/i, "⚽"],
+  [/rower|hulajn/i, "🚲"], [/planszow|puzzl|układank/i, "🧩"], [/miś|pluszak|lalk/i, "🧸"], [/koni|kuc|stajni/i, "🐴"],
+  [/samochod|samochód|pociąg|autk/i, "🚂"], [/skarpet|kapcie|czapk|szalik|rękawic|piżam|sweter/i, "🧦"], [/czekolad|słodycz|pierni|ciast/i, "🍫"],
+  [/perfum|kosmetyk|krem/i, "💄"], [/kawa|kawy|herbat|kubk/i, "☕"], [/słuchawk|muzyk|gitar|głośnik/i, "🎧"], [/konsol|telefon|tablet|komputer/i, "🎮"],
+  [/kosmos|rakiet|gwiazd/i, "🚀"], [/pies|kot|zwierz/i, "🐶"], [/bransolet|biżuter|naszyjnik|kolczyk/i, "📿"], [/kino|film|bilety/i, "🎬"],
+  [/kwiat|ogród|rośl/i, "🌷"], [/wino|piwo|drink/i, "🍷"], [/narzędzi|młotek|wiertark/i, "🔧"], [/podróż|wycieczk|góry|nocleg|walizk/i, "🧳"],
+  [/talerz|szklank|naczyn/i, "🍽️"], [/prześcierad|pościel|koc\b/i, "🛏️"], [/basen|term/i, "♨️"], [/marakas|grzechot/i, "🎶"], [/straż|pożarn/i, "🚒"], [/choink/i, "🎄"], [/teatr/i, "🎭"], [/świec|zapach/i, "🕯️"], [/spa|masaż|relaks/i, "🛁"], [/plecak|szkoł|zeszyt|piór/i, "🎒"], [/zdjęci|aparat/i, "📷"], [/kalendarz|zegar/i, "🗓️"],
+];
+/* Losowe (ale stałe dla danej listy i roku) miejsce, obrót i rozmiar każdej naklejki. */
+const SLOTS = ["tr", "bm", "bl", "br", "l", "r"];
+function placeStickers(emojis, key) {
+  const rnd = (k) => (hash(key + "|" + k) % 1000) / 1000;
+  const slots = [...SLOTS].sort((a, b) => rnd(a) - rnd(b)).slice(0, emojis.length);
+  let bottom = false;
+  const html = emojis.map((e, i) => {
+    const sl = slots[i], r = (k) => rnd(sl + k);
+    const rot = Math.round(-22 + r("rot") * 44), size = (1.8 + r("sz") * .7).toFixed(2);
+    let pos;
+    if (sl === "tr") pos = `top:${8 + Math.round(r("a") * 8)}px;right:${10 + Math.round(r("b") * 10)}px`;
+    else if (sl === "bm") pos = `bottom:${6 + Math.round(r("a") * 5)}px;left:${38 + Math.round(r("b") * 18)}%`;
+    else if (sl === "bl") pos = `bottom:${6 + Math.round(r("a") * 5)}px;left:${12 + Math.round(r("b") * 8)}px`;
+    else if (sl === "br") pos = `bottom:${6 + Math.round(r("a") * 5)}px;right:${12 + Math.round(r("b") * 12)}px`;
+    else if (sl === "l") pos = `left:calc(var(--ov,-10px));top:${25 + Math.round(r("a") * 50)}%`;
+    else pos = `right:calc(var(--ov,-10px));top:${30 + Math.round(r("a") * 50)}%`;
+    if (sl[0] === "b") bottom = true;
+    return `<span class="stk" style="${pos};font-size:${size}rem;transform:rotate(${rot}deg)">${e}</span>`;
+  }).join("");
+  return { html, bottom };
+}
+function stickers(items, key) {
+  const found = [];
+  for (const it of items) for (const [re, e] of RULES) if (re.test(it) && !found.includes(e)) { found.push(e); break; }
+  if (found.length > 3) return found.sort((a, b) => hash(key + a) - hash(key + b)).slice(0, 3);
+  return found;
+}
+
+
+const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+// [tekst](https://adres) albo goły adres https://... zamieniają się w link.
+const linkify = (s) => esc(s)
+  .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+  .replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, '$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>');
+const ANGEL = '<svg class="angel" viewBox="0 0 80 70" role="img" aria-label="Aniołek"><ellipse cx="40" cy="9" rx="14" ry="4" fill="none" stroke="#e2b457" stroke-width="2.5"/><path d="M40 26 C26 14 8 16 4 30 C14 34 28 34 36 38 Z" fill="#f4f7ff"/><path d="M40 26 C54 14 72 16 76 30 C66 34 52 34 44 38 Z" fill="#f4f7ff"/><circle cx="40" cy="22" r="9" fill="#ffe6c4"/><path d="M31 66 C31 44 36 34 40 34 C44 34 49 44 49 66 Z" fill="#f4f7ff"/></svg>';
+
+// Wersja karty: lista pary i lista dziecka dostają różne wersje; rok przesuwa przydział.
+function styleOf(kind, idx, y) {
+  const off = Number(y) % STYLES.length;
+  return (idx + (kind === "child" ? house.people.length : 0) + off) % STYLES.length;
+}
+function listCard(styleIdx, who, blocks, y) {
+  const v = styleIdx + 1;
+  const ul0 = blocks.find((b) => b.ul), items = ul0 ? ul0.ul : blocks.flatMap((b) => b.p.split("\n"));
+  const key = who + "|" + y + "|0";
+  const sty = mixVars(styleIdx, key).replace(/"/g, "'");
+  const ps = placeStickers(stickers(items, key), key);
+  const body = blocks.map((b) => b.ul
+    ? `<ul>${b.ul.map((t) => `<li>${linkify(t)}</li>`).join("")}</ul>`
+    : `<p class="t">${linkify(b.p).replace(/\n/g, "<br>")}</p>`).join("");
+  let head = `<h3>${esc(show(who))}</h3>`;
+  if (v === 2) head = ANGEL + head;
+  if (v === 5) head = `<div class="tagb">${head}</div>`;
+  return `<article class="lc v${v}${ps.bottom ? " pad-b" : " no-stk"}" style="${sty}">${head}${body}${ps.html}</article>`;
+}
+async function fetchLetter(name) {
+  try {
+    const res = await fetch(houseId + "/listy/" + year + "/" + name + ".txt", { cache: "no-store" });
+    if (!res.ok) return null;
+    const text = (await res.text()).trim();
+    return text ? parseLetter(text) : null;
+  } catch (e) { return null; }
+}
+// Pokazuje listy wylosowanej pary i dziecka (tylko te, które już istnieją).
+async function showLists(taker, child) {
+  if (!house.children) return;
+  const jobs = [["pair", house.people.indexOf(taker), taker]];
+  if (child) jobs.push(["child", house.children.indexOf(child), child]);
+  const cards = await Promise.all(jobs.map(async ([kind, idx, name]) => {
+    const blocks = await fetchLetter(name);
+    return blocks ? listCard(styleOf(kind, idx, year), name, blocks, year) : "";
+  }));
+  document.getElementById("lists").innerHTML = cards.join("");
+}
 
   if (!person) {
     content.innerHTML = '<p class="label">Wybierz siebie:</p><ul></ul>';
@@ -204,6 +487,7 @@
         box.querySelector(".name").textContent = show(child);
         box.hidden = false;
       }
+      return { taker, child };
     }
 
     function sparkle() {
@@ -222,8 +506,9 @@
     async function open(animate) {
       button.disabled = true;
       error.hidden = true;
+      let drawn;
       try {
-        await loadResult();
+        drawn = await loadResult();
       } catch (e) {
         button.disabled = false;
         error.textContent = "Nie udało się wczytać wyniku (" + e.message + ").";
@@ -243,6 +528,7 @@
       hint.remove();
       if (!animate) result.style.animation = "none";
       result.classList.add("shown");
+      showLists(drawn.taker, drawn.child);
     }
 
     if (storage.get()) open(false);
