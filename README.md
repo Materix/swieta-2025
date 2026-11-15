@@ -19,3 +19,11 @@ bez wzajemności (A→B wyklucza B→A).
 
 Po kliknięciu prezent się otwiera (animacja). Strona zapamiętuje w przeglądarce (`localStorage`), że dana osoba
 w danym domu i roku już otworzyła prezent — przy kolejnym wejściu wynik pokazuje się od razu, bez animacji.
+
+Listy do Aniołka (tylko Bęczarka): `beczarka/listy/<rok>/<Obdarowywany>.txt` — jeden plik na parę lub dziecko
+(`Ola-Michal`, `Rodzice`, `Wojtek`, `Jozek`, …), co roku nowe. Treść pisana zwykłym tekstem, emoji dozwolone:
+wiersze zaczynające się od `- ` to punkty, reszta to akapity (pusty wiersz rozdziela akapity), link: `[tekst](https://adres)`
+albo sam adres. Po otwarciu prezentu strona pokazuje cały list wylosowanej pary i dziecka (jeśli plik istnieje)
+w jednej z 9 wersji tła; lista pary i dziecka mają zawsze różne wersje, a czcionka, kolory i naklejki (0–3, dobrane
+ze słów w liście) są losowane stabilnie dla danej osoby i roku. Wygląd: style `.v1`–`.v9` w `index.html`.
+Czcionki ładują się z Google Fonts.
