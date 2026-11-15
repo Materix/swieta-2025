@@ -3,6 +3,8 @@
 Lista to list napisany do Aniołka przez parę albo dziecko (np. „Ola i Michał”, „Wojtek”). Po otwarciu prezentu obok imienia
 **wylosowanej pary** i **wylosowanego dziecka** pojawia się ikonka listu ✉️ (tylko gdy plik istnieje). Kliknięcie otwiera
 list w oknie modalnym (`<dialog id="letter">`) na wierzchu strony; zamyka go ✕, Esc albo klik w tło. Listy są co roku nowe i wyświetlane w całości.
+Wszystkie listy danego roku są też na stronie `?dom=beczarka&widok=listy` (przycisk „Listy do Aniołka” pod kartą
+losowania): koperty par i dzieci, klik otwiera ten sam modal. Brakujący list to wyszarzona koperta „list jeszcze w drodze”.
 Podgląd własnego listu i listów dzieci to osobne zadanie: issue #3.
 
 ## Gdzie leżą pliki

@@ -130,6 +130,77 @@
   .lc ul { display: block; }
   @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
   @media (prefers-reduced-motion: reduce) { .lc { animation: none; } }
+  /* Wejście do wszystkich listów (pod kartą losowania) i strona z kopertami (?widok=listy) */
+  .more { margin: 26px 0 0; }
+  a.to-letters {
+    display: inline-flex; align-items: center; gap: 12px; padding: 10px 20px 10px 12px; border-radius: 999px;
+    background: linear-gradient(#fffaf0, #f3e2bd); border: 1px solid var(--gold); color: var(--red-dark);
+    text-decoration: none; font-size: 16px; box-shadow: 0 3px 0 rgba(140,24,32,.15), 0 6px 14px rgba(0,0,0,.12);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  a.to-letters:hover { transform: translateY(-2px); box-shadow: 0 5px 0 rgba(140,24,32,.15), 0 10px 18px rgba(0,0,0,.16); }
+  a.to-letters:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  a.to-letters small { display: block; color: var(--muted); font-size: 12px; }
+  a.to-letters span.t { text-align: left; line-height: 1.25; }
+  .mini-env { position: relative; flex: none; width: 40px; height: 28px; border-radius: 4px; background: #ecd5a8; overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(120,80,30,.25); }
+  .mini-env::before { content: ""; position: absolute; inset: 0 0 auto; height: 62%; background: #dcbd85; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  .mini-env::after { content: ""; position: absolute; left: 50%; top: 62%; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px;
+    border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e0505a, var(--red-dark)); }
+  a.to-letters:hover .mini-env { animation: wiggle .5s ease-in-out; }
+  @keyframes wiggle { 25% { transform: rotate(-8deg); } 75% { transform: rotate(6deg); } }
+  .card.wide { max-width: 680px; }
+  .envs-h { margin: 22px 0 10px; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: normal; }
+  .envs { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; }
+  .env {
+    position: relative; display: block; width: 100%; aspect-ratio: 3 / 2; padding: 0; border-radius: 8px; overflow: hidden;
+    background: var(--env, #f1ddb3); color: #5a2d1a; cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(120,80,30,.18), 0 8px 16px rgba(0,0,0,.22); transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .env:hover { background: var(--env, #f1ddb3); transform: translateY(-4px) rotate(-1.5deg); box-shadow: inset 0 0 0 1px rgba(120,80,30,.18), 0 14px 22px rgba(0,0,0,.28); }
+  .env:nth-child(even):hover { transform: translateY(-4px) rotate(1.5deg); }
+  .env:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .env::before { /* klapa */
+    content: ""; position: absolute; inset: 0 0 auto; height: 52%; z-index: 1;
+    background: linear-gradient(rgba(0,0,0,.09), rgba(0,0,0,.09)), var(--env, #f1ddb3); clip-path: polygon(0 0, 100% 0, 50% 100%);
+    filter: drop-shadow(0 2px 1px rgba(0,0,0,.2));
+  }
+  .env::after { /* boczne zakładki */
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top right, rgba(0,0,0,.05) 50%, transparent 50.5%) left bottom / 50% 100% no-repeat,
+                linear-gradient(to top left, rgba(0,0,0,.05) 50%, transparent 50.5%) right bottom / 50% 100% no-repeat;
+  }
+  .env .seal {
+    position: absolute; left: 50%; top: 52%; z-index: 2; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 17px; line-height: 1; color: #fde3a7;
+    background: radial-gradient(circle at 35% 30%, #e0505a, var(--red) 55%, var(--red-dark));
+    box-shadow: 0 0 0 3px rgba(179,32,42,.25), 0 3px 6px rgba(0,0,0,.35); transition: transform .2s ease;
+  }
+  .env:hover .seal { transform: scale(1.12) rotate(-12deg); }
+  .env .to {
+    position: absolute; left: 6px; right: 6px; bottom: 7%; z-index: 2; text-align: center;
+    font-family: "Caveat", cursive; font-weight: 700; font-size: 1.45rem; line-height: 1.05;
+  }
+  .env .to small { display: block; font-family: Georgia, serif; font-weight: normal; font-size: 11px; color: #8a6a4a; }
+  .env.empty { cursor: default; filter: grayscale(.85); opacity: .55; }
+  .env.empty:hover { transform: none; box-shadow: inset 0 0 0 1px rgba(120,80,30,.18), 0 8px 16px rgba(0,0,0,.22); }
+  .env.empty .seal { background: #9a948a; box-shadow: 0 2px 4px rgba(0,0,0,.25); }
+  .env.empty:hover .seal { transform: none; }
+  @media (max-width: 480px) {
+    .envs { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .env .to { font-size: 1.15rem; }
+    .env::before { height: 42%; }
+    .env .seal { top: 42%; width: 30px; height: 30px; margin: -15px 0 0 -15px; font-size: 14px; }
+    .env .to { bottom: 5%; }
+    .env .to small { font-size: 10px; }
+  }
+  .envs-note { color: var(--muted); font-size: 14px; margin: 18px 0 0; }
+  a.back { display: inline-block; margin-top: 24px; color: var(--red-dark); font-size: 16px; text-underline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    a.to-letters, .env, .env .seal { transition: none; }
+    a.to-letters:hover, .env:hover, .env:nth-child(even):hover, .env:hover .seal { transform: none; }
+    a.to-letters:hover .mini-env { animation: none; }
+  }
 /* ---------- wspólny szkielet karty ---------- */
 .lc { position: relative; padding: 34px 38px 26px; min-width: 0; overflow-wrap: anywhere; }
 .lc h3 { margin: 0; }
@@ -315,6 +386,8 @@
 
   const year = YEARS.includes(params.get("rok")) ? params.get("rok") : defaultYear;
   const person = house.people.find((p) => p === params.get("osoba"));
+  // ?widok=listy: wszystkie listy do Aniołka z danego roku (tylko domy z listami, czyli z dziećmi).
+  const lettersView = params.get("widok") === "listy" && !!house.children;
   const content = document.getElementById("content");
   document.getElementById("house").textContent = "🏠 " + house.name;
   document.title = "Świąteczne losowanie — " + house.name;
@@ -451,10 +524,8 @@ async function fetchLetter(name) {
     return text ? parseLetter(text) : null;
   } catch (e) { return null; }
 }
-// Obok imienia wylosowanej pary i dziecka pojawia się ikonka listu (tylko gdy lista istnieje);
-// kliknięcie otwiera list w oknie modalnym na wierzchu strony.
-async function addLetterIcons(slots) {
-  if (!house.children) return;
+// Okno modalne z listem: na wierzchu strony; zamyka je ✕, Esc albo klik w tło.
+function openLetter(kind, who, blocks) {
   const dialog = document.getElementById("letter"), holder = dialog.querySelector(".lm");
   if (!dialog.dataset.ready) {
     dialog.dataset.ready = "1";
@@ -462,8 +533,16 @@ async function addLetterIcons(slots) {
     dialog.addEventListener("click", (ev) => { if (ev.target === dialog) dialog.close(); });   // klik w tło
     dialog.addEventListener("close", () => { holder.innerHTML = ""; });
   }
+  const idx = (kind === "pair" ? house.people : house.children).indexOf(who);
+  holder.innerHTML = listCard(styleOf(kind, idx, year), who, blocks, year);
+  holder.scrollTop = 0;
+  dialog.setAttribute("aria-label", "List do Aniołka: " + show(who));
+  dialog.showModal();
+}
+// Obok imienia wylosowanej pary i dziecka pojawia się ikonka listu (tylko gdy lista istnieje).
+async function addLetterIcons(slots) {
+  if (!house.children) return;
   await Promise.all(slots.map(async ([kind, who, nameEl]) => {
-    const idx = (kind === "pair" ? house.people : house.children).indexOf(who);
     const blocks = await fetchLetter(who);
     if (!blocks) return;
     const btn = document.createElement("button");
@@ -473,17 +552,70 @@ async function addLetterIcons(slots) {
     btn.title = "List do Aniołka: " + show(who);
     btn.setAttribute("aria-label", "Otwórz list do Aniołka: " + show(who));
     btn.setAttribute("aria-haspopup", "dialog");
-    btn.addEventListener("click", () => {
-      holder.innerHTML = listCard(styleOf(kind, idx, year), who, blocks, year);
-      holder.scrollTop = 0;
-      dialog.setAttribute("aria-label", "List do Aniołka: " + show(who));
-      dialog.showModal();
-    });
+    btn.addEventListener("click", () => openLetter(kind, who, blocks));
     nameEl.append(" ", btn);
   }));
 }
+// Strona ze wszystkimi listami: koperty z pieczęcią, kliknięcie otwiera list w tym samym modalu.
+const ENV_PAIR = ["#f1ddb3", "#efd6a6", "#f3e3c3", "#ead0a0", "#f0dcb8"];
+const ENV_CHILD = ["#fbdde6", "#dcebfb", "#dff3e6", "#fff1c2"];
+async function showAllLetters() {
+  const app = document.getElementById("app");
+  app.classList.add("wide");
+  app.querySelector("h1").textContent = "Listy do Aniołka";
+  app.querySelector(".tree").textContent = "👼";
+  document.title = "Listy do Aniołka — " + house.name;
+  content.innerHTML = '<h2 class="envs-h">Pary</h2><div class="envs" data-kind="pair"></div>' +
+    '<h2 class="envs-h">Dzieci</h2><div class="envs" data-kind="child"></div><p class="envs-note" hidden></p>';
+  const groups = [["pair", house.people, ENV_PAIR, "✿"], ["child", house.children, ENV_CHILD, "★"]];
+  let found = 0;
+  await Promise.all(groups.flatMap(([kind, list, colors, mark]) => {
+    const box = content.querySelector(`.envs[data-kind="${kind}"]`);
+    return list.map(async (who, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "env";
+      btn.style.setProperty("--env", colors[i % colors.length]);
+      btn.innerHTML = `<span class="seal" aria-hidden="true">${mark}</span><span class="to"></span>`;
+      btn.querySelector(".to").textContent = show(who);
+      box.appendChild(btn);   // kolejność jak w HOUSES (dodane od razu, zanim przyjdzie plik)
+      const blocks = await fetchLetter(who);
+      if (blocks) {
+        found++;
+        btn.setAttribute("aria-label", "Otwórz list do Aniołka: " + show(who));
+        btn.setAttribute("aria-haspopup", "dialog");
+        btn.addEventListener("click", () => openLetter(kind, who, blocks));
+      } else {
+        btn.classList.add("empty");
+        btn.disabled = true;
+        btn.querySelector(".seal").textContent = "…";
+        btn.querySelector(".to").insertAdjacentHTML("beforeend", "<small>list jeszcze w drodze</small>");
+        btn.setAttribute("aria-label", show(who) + ": list jeszcze w drodze");
+      }
+    });
+  }));
+  if (!found) {
+    const note = content.querySelector(".envs-note");
+    note.textContent = "W tym roku nie ma jeszcze żadnych listów.";
+    note.hidden = false;
+  }
+  const back = new URLSearchParams(params);
+  back.delete("widok");
+  content.insertAdjacentHTML("beforeend", '<a class="back" href="?' + back.toString() + '">← Wróć do losowania</a>');
+}
+// Pod kartą losowania (dom z listami): wejście na stronę ze wszystkimi listami.
+if (lettersView) showAllLetters();
+else if (house.children) {
+  const to = new URLSearchParams(params);
+  to.set("widok", "listy");
+  document.getElementById("app").insertAdjacentHTML("beforeend",
+    '<p class="more"><a class="to-letters" href="?' + to.toString() + '"><span class="mini-env" aria-hidden="true"></span>' +
+    '<span class="t">Listy do Aniołka<small>zobacz listy wszystkich</small></span></a></p>');
+}
 
-  if (!person) {
+  if (lettersView) {
+    // treść rysuje showAllLetters()
+  } else if (!person) {
     content.innerHTML = '<p class="label">Wybierz siebie:</p><ul></ul>';
     const list = content.querySelector("ul");
     for (const p of house.people) {
