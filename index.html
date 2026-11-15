@@ -104,8 +104,28 @@
   }
 
   /* Listy do Aniołka (karty .lc w dziewięciu wersjach .v1–.v9) */
-  #lists { width: 100%; max-width: 760px; display: grid; gap: 36px; }
-  #lists:empty { display: none; }
+  /* Modal z listem: na wierzchu strony, przewijany w środku, zamykany Esc, tłem albo przyciskiem. */
+  dialog#letter {
+    border: 0; padding: 0; background: transparent; color: inherit; overflow: visible;
+    width: min(760px, calc(100% - 16px)); max-width: none; max-height: none;
+  }
+  dialog#letter::backdrop { background: rgba(5, 18, 12, .8); backdrop-filter: blur(3px); }
+  body:has(dialog#letter[open]) { overflow: hidden; }
+  .lm { max-height: calc(100dvh - 16px); overflow-y: auto; overscroll-behavior: contain; padding: 14px; }
+  .lm-close {
+    position: absolute; top: -4px; right: -4px; z-index: 5; width: 42px; height: 42px; padding: 0;
+    border: 2px solid #fff; border-radius: 50%; font-size: 20px; line-height: 1; background: var(--red);
+    box-shadow: 0 4px 12px rgba(0,0,0,.45);
+  }
+  .lm-close:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .letter {
+    font-size: 28px; line-height: 1; padding: 4px 8px; margin-left: 2px; vertical-align: middle;
+    background: #fff; border: 2px solid var(--gold); border-radius: 12px; cursor: pointer;
+    box-shadow: 0 2px 0 rgba(0,0,0,.12); transition: transform .15s ease, background-color .15s ease;
+  }
+  .letter:hover { background: #fdf1d6; transform: scale(1.12) rotate(-6deg); }
+  .letter:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .letter { transition: none; } .letter:hover { transform: none; } }
   .lc { text-align: left; animation: rise .6s ease-out; }
   .lc ul { display: block; }
   @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
@@ -258,7 +278,10 @@
   <label class="year">Rok losowania <select id="year"></select></label>
   <div id="content"></div>
 </main>
-<section id="lists" aria-label="Listy do Aniołka"></section>
+<dialog id="letter" aria-label="List do Aniołka">
+  <button type="button" class="lm-close" aria-label="Zamknij list">✕</button>
+  <div class="lm"></div>
+</dialog>
 <script>
   // Domy: uczestnicy i lata, dla których istnieje katalog <dom>/<rok> — dopisz nowy rok po losowaniu.
   const HOUSES = {
@@ -428,16 +451,36 @@ async function fetchLetter(name) {
     return text ? parseLetter(text) : null;
   } catch (e) { return null; }
 }
-// Pokazuje listy wylosowanej pary i dziecka (tylko te, które już istnieją).
-async function showLists(taker, child) {
+// Obok imienia wylosowanej pary i dziecka pojawia się ikonka listu (tylko gdy lista istnieje);
+// kliknięcie otwiera list w oknie modalnym na wierzchu strony.
+async function addLetterIcons(slots) {
   if (!house.children) return;
-  const jobs = [["pair", house.people.indexOf(taker), taker]];
-  if (child) jobs.push(["child", house.children.indexOf(child), child]);
-  const cards = await Promise.all(jobs.map(async ([kind, idx, name]) => {
-    const blocks = await fetchLetter(name);
-    return blocks ? listCard(styleOf(kind, idx, year), name, blocks, year) : "";
+  const dialog = document.getElementById("letter"), holder = dialog.querySelector(".lm");
+  if (!dialog.dataset.ready) {
+    dialog.dataset.ready = "1";
+    dialog.querySelector(".lm-close").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (ev) => { if (ev.target === dialog) dialog.close(); });   // klik w tło
+    dialog.addEventListener("close", () => { holder.innerHTML = ""; });
+  }
+  await Promise.all(slots.map(async ([kind, who, nameEl]) => {
+    const idx = (kind === "pair" ? house.people : house.children).indexOf(who);
+    const blocks = await fetchLetter(who);
+    if (!blocks) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "letter";
+    btn.textContent = "✉️";
+    btn.title = "List do Aniołka: " + show(who);
+    btn.setAttribute("aria-label", "Otwórz list do Aniołka: " + show(who));
+    btn.setAttribute("aria-haspopup", "dialog");
+    btn.addEventListener("click", () => {
+      holder.innerHTML = listCard(styleOf(kind, idx, year), who, blocks, year);
+      holder.scrollTop = 0;
+      dialog.setAttribute("aria-label", "List do Aniołka: " + show(who));
+      dialog.showModal();
+    });
+    nameEl.append(" ", btn);
   }));
-  document.getElementById("lists").innerHTML = cards.join("");
 }
 
   if (!person) {
@@ -528,7 +571,8 @@ async function showLists(taker, child) {
       hint.remove();
       if (!animate) result.style.animation = "none";
       result.classList.add("shown");
-      showLists(drawn.taker, drawn.child);
+      addLetterIcons([["pair", drawn.taker, result.querySelector(".name")],
+        ...(drawn.child ? [["child", drawn.child, result.querySelector(".child .name")]] : [])]);
     }
 
     if (storage.get()) open(false);
