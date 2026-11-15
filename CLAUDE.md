@@ -16,7 +16,7 @@
 
 - Aniołek to postać, która przynosi prezenty. Każda para i każde dziecko w Bęczarce pisze do niego list, co roku nowy.
 - Listy mogą być publiczne. Pokazujemy zawsze cały list, bez przełączników trybów i bez skracania.
-- List otwiera się kliknięciem ikonki ✉️ obok wylosowanej osoby (para i dziecko osobno); ponowne kliknięcie zamyka. Nie otwiera się sam.
+- List otwiera się kliknięciem ikonki ✉️ obok wylosowanej osoby (para i dziecko osobno) w modalu `<dialog id="letter">` na wierzchu strony (✕, Esc, klik w tło zamykają; długi list przewija się w środku). Nie otwiera się sam.
 - Podgląd własnego listu i listów swoich dzieci: issue #3 (brakuje wiedzy, które dziecko należy do której pary).
 - Na karcie nie ma żadnych dopisanych napisów (ani „Lista dla Aniołka”, ani „Lista życzeń”). Jest tylko imię i treść.
 - Wygląd zatwierdzony: 9 wersji tła `.v1`–`.v9` (Pergamin, Zimowa noc, Kolorowy papier, Zeszyt w kratkę, Kraft,

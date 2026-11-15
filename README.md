@@ -24,6 +24,6 @@ Listy do Aniołka (tylko Bęczarka): `beczarka/listy/<rok>/<Obdarowywany>.txt` �
 (`Ola-Michal`, `Rodzice`, `Wojtek`, `Jozek`, …), co roku nowe. Treść pisana zwykłym tekstem, emoji dozwolone:
 wiersze zaczynające się od `- ` to punkty, reszta to akapity (pusty wiersz rozdziela akapity), link: `[tekst](https://adres)`
 albo sam adres. Po otwarciu prezentu obok imienia wylosowanej pary i dziecka pojawia się ikonka listu ✉️ (jeśli plik istnieje);
-kliknięcie otwiera cały list pod kartą w jednej z 9 wersji tła, ponowne kliknięcie go zamyka; lista pary i dziecka mają zawsze różne wersje, a czcionka, kolory i naklejki (0–3, dobrane
+kliknięcie otwiera cały list w oknie modalnym na wierzchu strony (zamknięcie: ✕, Esc albo klik w tło) w jednej z 9 wersji tła; lista pary i dziecka mają zawsze różne wersje, a czcionka, kolory i naklejki (0–3, dobrane
 ze słów w liście) są losowane stabilnie dla danej osoby i roku. Wygląd: style `.v1`–`.v9` w `index.html`.
 Czcionki ładują się z Google Fonts.
