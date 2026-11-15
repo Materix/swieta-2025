@@ -19,7 +19,6 @@
 - List otwiera się kliknięciem ikonki ✉️ obok wylosowanej osoby (para i dziecko osobno) w modalu `<dialog id="letter">` na wierzchu strony (✕, Esc, klik w tło zamykają; długi list przewija się w środku). Nie otwiera się sam.
 - Wszystkie listy roku: `?dom=beczarka&widok=listy` (koperty z pieczęcią, puste = „list jeszcze w drodze”), wejście przyciskiem
   „Listy do Aniołka” pod kartą losowania; klik w kopertę otwiera ten sam modal (`openLetter`), z tą samą wersją tła.
-- Podgląd własnego listu i listów swoich dzieci: issue #3 (brakuje wiedzy, które dziecko należy do której pary).
 - Na karcie nie ma żadnych dopisanych napisów (ani „Lista dla Aniołka”, ani „Lista życzeń”). Jest tylko imię i treść.
 - Wygląd zatwierdzony: 9 wersji tła `.v1`–`.v9` (Pergamin, Zimowa noc, Kolorowy papier, Zeszyt w kratkę, Kraft,
   Czerwony aksamit, Lód, Tablica w lesie, Kartka papieru). Listy są szerokie (kolumna `#lists` do 760 px).
