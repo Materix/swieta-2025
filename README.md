@@ -19,3 +19,6 @@ bez wzajemności (A→B wyklucza B→A).
 
 Po kliknięciu prezent się otwiera (animacja). Strona zapamiętuje w przeglądarce (`localStorage`), że dana osoba
 w danym domu i roku już otworzyła prezent — przy kolejnym wejściu wynik pokazuje się od razu, bez animacji.
+
+Listy do Aniołka: `beczarka/listy/<rok>/<Obdarowywany>.txt` (np. `Ola-Michal.txt`, `Wojtek.txt`, `Rodzice.txt`) —
+tekst listy tak, jak go napisano (emoji, punkty `- `); jeden plik na parę lub dziecko, co roku nowe.
